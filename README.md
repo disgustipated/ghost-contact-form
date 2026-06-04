@@ -38,7 +38,7 @@ LOCALBIND=123.12.12.1
 
 ## Usage
 
-### Deploy web service
+### Deploy Mailer Service App
 #### To run from command line execute
 ```
 $ node ghost-contact-svc.js
@@ -46,7 +46,7 @@ $ node ghost-contact-svc.js
 You should see the message `Listening on http://localhost:7000`. 
 #### To run as systemd
 Configure .env with desired parameters  
-Configure .service file with proper values ofr path to js, .env, and user  
+Configure .service file with proper values for path to js, .env, and user  
 Run  
 ```
 systemd link /path/to/your/ghost-contact.service
@@ -56,10 +56,31 @@ To remove run
 ```
 systemd disable ghost-contact.service
 ```
+### Configure Proxy
+If using a proxy and the mailer service exists on another system, you'll need to have the calls to the web service and asset files pointed appropriately  
+#### Nginx config
+WIP for production setup - This will route all v1 calls to this box, this needs to be handled better to make this specific to this app service. Replace upstream app/port with ip and port
+```
+    location ~ /v1/ {
+        proxy_set_header        Host              $host;
+        proxy_set_header        Authorization     $http_authorization;
+        proxy_set_header        X-Real-IP         $remote_addr;
+        proxy_set_header        X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header        X-Forwarded-Proto $scheme;
+        proxy_no_cache          1;
+        proxy_cache_bypass      1;
+        #add_header X-Content-Type-Options $header_content_type_options;
+        proxy_ssl_server_name on;
+        set $upstream_app ip-for-mailerservice;
+        set $upstream_port port-for-mailerservice;
+        set $upstream_proto http;
+        proxy_pass $upstream_proto://$upstream_app:$upstream_port;
+    }
+```
+
 ### Deploy Ghost config - wip
 Add footer injection  
     header injection  
-    assets - css and js  
     contact form html to desired location  
 
 ## Test Locally
