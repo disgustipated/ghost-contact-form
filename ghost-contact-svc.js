@@ -12,6 +12,7 @@ var smtp  = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthoriz
 smtp.host      = process.env.SMTP_HOST;
 smtp.auth.user = process.env.SMTP_USER;
 smtp.auth.pass = process.env.SMTP_PASS;
+smtp.localAddress = process.env.LOCALBIND;
 var transporter = nodemailer.createTransport(smtpTrans(smtp));
 
 var app = express();
@@ -32,8 +33,8 @@ app.get('/v1/demo', function(req, res) {
     res.sendFile(__dirname + '/demo.html');
 });
 
-app.listen(process.env.PORT || 7000, function(){
-	console.log('Listening on http://localhost:' + (process.env.PORT || 7000));
+app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', function(){
+    console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
 });
 
 function sendEmail(data, res){
@@ -49,8 +50,8 @@ function sendEmail(data, res){
         <p>${data.message}</p>
     `
     email.html = sanitize(output, { 
-    	allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ])
-	});
+        allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ])
+    });
     transporter.sendMail(email, function(error, info){
         if(error) return res.json({"sendEmail": "failed"});
         res.json({"sendEmail": "ok"});
