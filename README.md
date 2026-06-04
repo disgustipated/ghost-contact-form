@@ -65,7 +65,7 @@ Add footer injection
 ## Test Locally
 ### Testing the mailer service
 From a system with curl, set your contact form var, run:
-`contact="http://6.13.40.143:7000/v1/contact"`
+`contact="http://your.internal.ip:7000/v1/contact"`
 Then run 
 `curl -v -X POST ${contact} -H "Content-Type: application/json" \
 -d '{"email": "destination@email.addr", \
