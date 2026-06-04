@@ -59,7 +59,7 @@ systemd disable ghost-contact.service
 ### Configure Proxy
 If using a proxy and the mailer service exists on another system, you'll need to have the calls to the web service and asset files pointed appropriately  
 #### Nginx config
-WIP for production setup - This will route all v1 calls to this box, this needs to be handled better to make this specific to this app service. Replace upstream app/port with ip and port
+WIP for production setup - This will route all v1 calls to this box, this needs to be handled better to make this specific to this app service. Replace upstream app/port with ip and port. When using the below, you can have the header/footer injections point to just /v1/path
 ```
     location ~ /v1/ {
         proxy_set_header        Host              $host;
