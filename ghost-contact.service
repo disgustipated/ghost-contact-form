@@ -8,6 +8,7 @@ Type=simple
 Restart=always
 RestartSec=1
 User=joe
+EnvironmentFile=/home/joe/ghost-contact-form/.env
 ExecStart=/usr/bin/env node /home/joe/ghost-contact-form/ghost-contact-svc.js
 
 [Install]
