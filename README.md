@@ -65,13 +65,22 @@ Add footer injection
 ## Test Locally
 ### Testing the mailer service
 From a system with curl, set your contact form var, run:
-`contact="http://your.internal.ip:7000/v1/contact"`
+`contact="http://6.13.40.143:7000/v1/contact"`
 Then run 
 `curl -v -X POST ${contact} -H "Content-Type: application/json" \
 -d '{"email": "destination@email.addr", \
 "name": "test email", \
 "subject": "feedback", \
 "message": "Production Light!"}' `
+
+### Demo form
+Add the below to the ghost-contact-svc.js below the app.post('/v1/contact'
+```
+app.get('/v1/demo', function(req, res) {
+    res.sendFile(__dirname + '/demo.html');
+});
+```
+This will enable a get call to load the demo.html to see how this application can be used. This existed in the upstream project but removed to prevent demo components loaded in code in prod.
 
 ## Deploy (More detailed info in the tutorial)
 TODO: update this

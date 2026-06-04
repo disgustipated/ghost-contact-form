@@ -29,10 +29,6 @@ app.post('/v1/contact', function(req, res) {
     res.status(403).json({"validation": "no email"});
 });
 
-app.get('/v1/demo', function(req, res) {
-    res.sendFile(__dirname + '/demo.html');
-});
-
 app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', function(){
     console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
 });
