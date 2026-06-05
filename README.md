@@ -82,8 +82,10 @@ WIP for production setup - This will route all v1 calls to this box, this needs 
 
 ### Deploy Ghost config - wip
 Add footer injection  
-    header injection  
-    contact form html to desired location  
+    header injection - if using basic-contact-form  
+    contact form html to desired location
+        - basic-contact-form.html - uses header injection css to format form display
+        - custom-contact-form.html - uses ghost theme classes to format display. this will likely need tweaking depending on your ghost theme. find buttons and input fields on your theme using devtools inspect and replace the input field and form classes.
 
 ## Test Locally
 ### Testing the mailer service
