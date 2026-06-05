@@ -46,7 +46,7 @@ app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', funct
 
 function sendEmail(data, res){
     var email = { "from": process.env.EMAIL_FROM, "to": process.env.EMAIL_TO};
-    email.subject = (process.env.EMAIL_SUBJHEAD + ' - ' || '') + (data.subject && data.subject.toUpperCase());
+    email.subject = (process.env.EMAIL_SUBJHEAD || 'My Site\'s Form') + ' - ' + (data.subject && data.subject.toUpperCase());
 
     const output = `
         <p>Hello,<p>
