@@ -58,9 +58,6 @@ var formProcessor = (function(){
     http.send(JSON.stringify(data));
     http.onload = function() {
         formAlert("Thank you, your message has been sent!");
-        if(url != undefined){
-        	responseAlert("Something went wrong with the backend. Try emailing directly!");
-    	}
         document.getElementById("contact-form").reset();
     }
   };
