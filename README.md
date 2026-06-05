@@ -41,11 +41,29 @@ EMAIL_SUBJHEAD=MYSITE Form
 ## Usage
 
 ### Deploy Mailer Service App
+A baseline installation of the mailer service would look like this
+```
+./ghost-contact-form
+|-- .env - main config
+|-- LICENSE
+|-- assets
+|   |-- css
+|   |   `-- form.css - used for basic html form. used in ghost cms header code injection only if using the basic html 
+|   `-- js
+|       |-- formProcessor.js - processor for form, used in ghost cms footer code injection
+|       `-- validate.min.js - validate fields, used in ghost cms footer code injection
+|-- ghost-contact-form.service - unit file if running in systemd
+|-- ghost-contact-svc.js - nodejs app, called by node from command line or systemd
+|-- node_modules - packages pulled down with npm
+|-- package.json - package json for dependencies
+```
+
 #### To run from command line execute
 ```
 $ node ghost-contact-svc.js
 ```
 You should see the message `Listening on http://localhost:7000`. 
+
 #### To run as systemd
 Configure .env with desired parameters  
 Configure .service file with proper values for path to js, .env, and user  
@@ -58,8 +76,10 @@ To remove run
 ```
 systemd disable ghost-contact.service
 ```
+
 ### Configure Proxy
 If using a proxy and the mailer service exists on another system, you'll need to have the calls to the web service and asset files pointed appropriately  
+
 #### Nginx config
 WIP for production setup - This will route all v1 calls to this box, this needs to be handled better to make this specific to this app service. Replace upstream app/port with ip and port. When using the below, you can have the header/footer injections point to just /v1/path
 ```
@@ -88,6 +108,7 @@ Add footer injection
         - custom-contact-form.html - uses ghost theme classes to format display. this will likely need tweaking depending on your ghost theme. find buttons and input fields on your theme using devtools inspect and replace the input field and form classes.
 
 ## Test Locally
+
 ### Testing the mailer service
 From a system with curl, set your contact form var, run:  
 `contact="http://your.internal.ip:7000/v1/contact"`  
