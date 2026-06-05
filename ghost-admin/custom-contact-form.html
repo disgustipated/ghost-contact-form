@@ -1,0 +1,24 @@
+<form class="g-auth-form-container full-width" id="contact-form" method="post" data-format="inline">
+  <div class="g-auth-form-container__normal">
+    <div class="g-auth-form__field">
+      <input class="g-auth-form__regular-input no-appearance" type="text" id="name" placeholder="Name" pattern=".{2,30}" required>
+    </div>
+    <div class="g-auth-form__field">  
+      <input class="g-auth-form__regular-input no-appearance" type="email" id="email" placeholder="Your email address" required>
+      <select id="subject" pattern=".{1,20}" required>
+          <option value="" disabled selected>Pick one subject...</option>
+          <option value="question">I have a question</option>
+          <option value="concept">I wanted to discuss a concept</option>
+          <option value="quote">I wanted to get a quote</option>
+      </select>
+    </div>
+    <div class="g-auth-form__field">
+      <textarea rows="5" id="message" placeholder="Message" pattern=".{10,4000}" required></textarea>
+      <input class="g-auth-form__regular-input no-appearance" type="text" name="_norobots" style="display:none !important;">
+    </div>
+    <div class="g-auth-form">
+      <button class="g-button wide no-appearance focusable" type="submit" id="submit" value="Send" onclick="formProcessor.process();return false;">Send</button>
+      <span id="responsemsg"></span>
+    </div>
+  </div>
+</form>
