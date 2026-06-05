@@ -50,7 +50,7 @@ var formProcessor = (function(){
 
   function sendData(data, url) {
     formAlert("One second...");
-    var postURL = (url || "https://api.your-blog.com/v1/contact");
+    var postURL = (url);
     var http = new XMLHttpRequest();
     http.open("POST", postURL, true);
     http.setRequestHeader("Content-Type", "application/json");
@@ -59,7 +59,7 @@ var formProcessor = (function(){
     http.onload = function() {
         formAlert("Thank you, your message has been sent!");
         if(url != undefined){
-        	responseAlert("Only the demo should display the server response: " + http.responseText);
+        	responseAlert("Something went wrong with the backend. Try emailing directly!");
     	}
         document.getElementById("contact-form").reset();
     }

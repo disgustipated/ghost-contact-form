@@ -8,6 +8,6 @@
     </select>
     <textarea rows="5" id="message" placeholder="Message" pattern=".{10,4000}" required></textarea>
     <input type="text" name="_norobots" style="display:none !important;">
-    <button class="btn" type="submit" id="submit" value="Send" onclick="formProcessor.process();return false;">Send</button>
+    <button class="btn" type="submit" id="submit" value="Send" onclick="formProcessor.process('/v1/contact');return false;">Send</button>
     <span id="responsemsg"></span>
 </form>
