@@ -12,7 +12,6 @@ var smtp  = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthoriz
 smtp.host      = process.env.SMTP_HOST;
 smtp.auth.user = process.env.SMTP_USER;
 smtp.auth.pass = process.env.SMTP_PASS;
-smtp.localAddress = process.env.LOCALBIND;
 var transporter = nodemailer.createTransport(smtpTrans(smtp));
 
 var app = express();
