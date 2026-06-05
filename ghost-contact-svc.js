@@ -22,15 +22,12 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  // Inspect headers here
-  console.debug(`Request headers:`, req.headers);
-  
-  // Process special headers like X-Forwarded-For
+  //console.debug(`Request headers:`, req.headers);
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
   
-  req.clientIp = clientIp; // Save it for later use
+  req.clientIp = clientIp;
   
   next();
 });
@@ -49,7 +46,7 @@ app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', funct
 
 function sendEmail(data, res){
     var email = { "from": process.env.EMAIL_FROM, "to": process.env.EMAIL_TO};
-    email.subject = 'MY BLOG - ' + (data.subject && data.subject.toUpperCase());
+    email.subject = (process.env.EMAIL_SUBJHEAD + ' - ' || '') + (data.subject && data.subject.toUpperCase());
 
     const output = `
         <p>Hello,<p>

@@ -32,9 +32,11 @@ EMAIL_TO = your@email.com
 ```
 PORT=7000
 LOCALBIND=123.12.12.1
+EMAIL_SUBJHEAD=MYSITE Form
 ```
 `PORT = ` - if you want to change the default port `7000` to something else.  
 `LOCALBIND=` - sets the bind ip for nodemailer and app listener, if not set then uses localhost  
+`EMAIL_SUBJHEAD=` - inserts value into subject line
 
 ## Usage
 
