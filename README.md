@@ -3,6 +3,8 @@ Add a beautiful, fully functional contact form to your Ghost blog or website wit
 
 *Not running on Ghost?* This solution also works with Gatsby, Hugo, Hexo, Nuxt and any other static site generator.
 
+https://buymeacoffee.com/matterasethis
+
 ## Prerequisites
 - A supported version of Node.js
 - npm to manage packages
