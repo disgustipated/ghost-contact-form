@@ -23,15 +23,14 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  // Inspect headers here
-  console.debug(`Request headers:`, req.headers);
+
+  //console.debug(`Request headers:`, req.headers);
   
-  // Process special headers like X-Forwarded-For
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
   
-  req.clientIp = clientIp; // Save it for later use
+  req.clientIp = clientIp;
   
   next();
 });
