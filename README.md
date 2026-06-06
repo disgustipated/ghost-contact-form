@@ -71,8 +71,8 @@ Configure .env with desired parameters
 Configure .service file with proper values for path to js, .env, and user  
 Run  
 ```
-systemd link /path/to/your/ghost-contact.service
-systemd status ghost-contact.service
+systemctl link /path/to/your/ghost-contact.service
+systemctl status ghost-contact.service
 ```
 To remove run  
 ```
