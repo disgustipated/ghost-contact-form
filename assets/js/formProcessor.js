@@ -32,7 +32,7 @@ var formProcessor = (function(){
       },
       robot: {
         presence: {
-        	allowEmpty: true
+          allowEmpty: true
         },
         length: {
             is: 0,
@@ -63,21 +63,23 @@ var formProcessor = (function(){
   };
 
   return ({
-    process: function(url) {
-        var attributes = {
-        	name: document.forms["contact-form"]["name"].value,
-        	email: document.forms["contact-form"]["email"].value,
-        	subject: document.forms["contact-form"]["subject"].value,
-        	message: document.forms["contact-form"]["message"].value,
-        	robot: document.forms["contact-form"]["_norobots"].value
-    	};
-      	validate.async(attributes, constraints)
-      	.then(function(success) {
-        	//console.log("Success", success);
-         	sendData(success, url);
+    process: function(url, formId = "contact-form") {
+      const form = document.getElementById(formId);
+      const attributes = {};
+
+      // Dynamically collect all fields we care about
+      const fields = form.querySelectorAll('input:not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="file"]):not([type="image"]), select, textarea');
+      fields.forEach(field => {
+          if (field.id) {
+            attributes[field.id] = field.value;
+          }
+      });
+      
+      validate.async(attributes, constraints)
+        .then(function(success) {
+          sendData(success, url);
       })
       .catch(function(error) {
-      	//console.log("ValidationError", error);
         formAlert(Object.values(error)[0][0]);
       })  
     }

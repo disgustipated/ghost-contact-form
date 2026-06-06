@@ -108,6 +108,14 @@ Add footer injection
     contact form html to desired location
         - basic-contact-form.html - uses header injection css to format form display
         - custom-contact-form.html - uses ghost theme classes to format display. this will likely need tweaking depending on your ghost theme. find buttons and input fields on your theme using devtools inspect and replace the input field and form classes.
+            id value is used to pass data to the email form
+            - Required Fields -  
+            ```
+            name
+            email
+            subject
+            message
+            ```
 
 ## Test Locally
 
