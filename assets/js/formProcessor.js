@@ -48,7 +48,7 @@ var formProcessor = (function(){
      document.getElementById("serverresponse").innerHTML = "<br><p><em>" + text + "</em></p>";
   };
 
-  function sendData(data, url) {
+  function sendData(data, url, formid) {
     formAlert("One second...");
     var postURL = (url);
     var http = new XMLHttpRequest();
@@ -58,7 +58,7 @@ var formProcessor = (function(){
     http.send(JSON.stringify(data));
     http.onload = function() {
         formAlert("Thank you, your message has been sent!");
-        document.getElementById("contact-form").reset();
+        document.getElementById(formid).reset();
     }
   };
 
@@ -77,7 +77,7 @@ var formProcessor = (function(){
       
       validate.async(attributes, constraints)
         .then(function(success) {
-          sendData(success, url);
+          sendData(success, url, formId);
       })
       .catch(function(error) {
         formAlert(Object.values(error)[0][0]);
