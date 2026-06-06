@@ -12,6 +12,7 @@ var smtp  = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthoriz
 smtp.host      = process.env.SMTP_HOST;
 smtp.auth.user = process.env.SMTP_USER;
 smtp.auth.pass = process.env.SMTP_PASS;
+const allowUrl = process.env.ALLOW_ORIGIN;
 var transporter = nodemailer.createTransport(smtpTrans(smtp));
 
 var app = express();
@@ -22,45 +23,59 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  //console.debug(`Request headers:`, req.headers);
+  // Inspect headers here
+  console.debug(`Request headers:`, req.headers);
+  
+  // Process special headers like X-Forwarded-For
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
   
-  req.clientIp = clientIp;
+  req.clientIp = clientIp; // Save it for later use
   
   next();
 });
 
 app.use('/v1/assets', express.static(__dirname + '/assets'));
+app.use('/v1/form-constraints', express.static(__dirname + '/form-constraints.json'));
 
 app.post('/v1/contact', function(req, res) {
-    console.log(`Sending mail from client: ${req.clientIp}`);
+    console.log(`Sending contact mail User from: ${req.clientIp}`);
     if(validator.validate(req.body.email)) return sendEmail(req.body, res);  
     res.status(403).json({"validation": "no email"});
 });
 
 app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', function(){
-    console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
+	console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
 });
 
-function sendEmail(data, res){
-    var email = { "from": process.env.EMAIL_FROM, "to": process.env.EMAIL_TO};
+function sendEmail(data, res) {
+    const email = {
+        from: process.env.EMAIL_FROM,
+        to: process.env.EMAIL_TO
+    };
+    
     email.subject = (process.env.EMAIL_SUBJHEAD || 'My Site\'s Form') + ' - ' + (data.subject && data.subject.toUpperCase());
 
-    const output = `
+    const formDetails = Object.keys(data)
+        .filter(key => typeof data[key] === 'string' && data[key].trim())
+        .map(key => `<li>${key}: ${sanitize(data[key])}</li>`);
+
+    const emailContent = `
         <p>Hello,<p>
-        <p>You got a new contact request.</p>
-        <h3>Contact Details</h3>
-        <ul><li>Name: ${data.name}</li><li>Email: ${data.email}</li></ul>
+        <p>Someone filled out a form on your site.</p>
+        <h3>Form Details</h3>
+        <ul>${formDetails.join('')}</ul>
         <h3>Message:</h3>
-        <p>${data.message}</p>
-    `
-    email.html = sanitize(output, { 
-        allowedTags: sanitize.defaults.allowedTags.concat([ 'img' ])
+        <p>${sanitize(data.message || '')}</p>
+    `;
+
+    email.html = sanitize(emailContent, {
+        allowedTags: sanitize.defaults.allowedTags.concat(['img'])
     });
-    transporter.sendMail(email, function(error, info){
-        if(error) return res.json({"sendEmail": "failed"});
-        res.json({"sendEmail": "ok"});
+
+    transporter.sendMail(email, function(error, info) {
+        if (error) return res.json({ sendEmail: "failed" });
+        res.json({ sendEmail: "ok" });
     });
-};
+}
