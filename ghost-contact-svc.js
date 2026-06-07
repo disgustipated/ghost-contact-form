@@ -7,13 +7,15 @@ var nodemailer = require('nodemailer');
 var smtpTrans  = require('nodemailer-smtp-transport');
 var validator  = require("email-validator");
 var sanitize   = require('sanitize-html');
-
 var smtp  = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthorized": false}, "debug": false};
 smtp.host      = process.env.SMTP_HOST;
 smtp.auth.user = process.env.SMTP_USER;
 smtp.auth.pass = process.env.SMTP_PASS;
 const allowUrl = process.env.ALLOW_ORIGIN;
 var transporter = nodemailer.createTransport(smtpTrans(smtp));
+
+const shouldLog = !process.env.NODE_ENV || process.env.DEBUG === 'true';
+const DEBUGLOG = shouldLog ? console.log : (() => {});
 
 var app = express();
 app.disable('x-powered-by');
@@ -23,15 +25,11 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-
-  //console.debug(`Request headers:`, req.headers);
-  
+  DEBUGLOG(`Request headers:`, req.headers);
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
-  
   req.clientIp = clientIp;
-  
   next();
 });
 
@@ -39,7 +37,7 @@ app.use('/v1/assets', express.static(__dirname + '/assets'));
 app.use('/v1/form-constraints', express.static(__dirname + '/form-constraints.json'));
 
 app.post('/v1/contact', function(req, res) {
-    console.log(`Sending contact mail User from: ${req.clientIp}`);
+    console.log(`Sending mail from clientIp: ${req.clientIp}`);
     if(validator.validate(req.body.email)) return sendEmail(req.body, res);  
     res.status(403).json({"validation": "no email"});
 });
@@ -57,7 +55,7 @@ function sendEmail(data, res) {
     email.subject = (process.env.EMAIL_SUBJHEAD || 'My Site\'s Form') + ' - ' + (data.subject && data.subject.toUpperCase());
 
     const formDetails = Object.keys(data)
-        .filter(key => typeof data[key] === 'string' && data[key].trim())
+        .filter(key => typeof data[key] === 'string' && key !== 'message' && data[key].trim())
         .map(key => `<li>${key}: ${sanitize(data[key])}</li>`);
 
     const emailContent = `
