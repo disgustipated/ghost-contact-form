@@ -48,6 +48,8 @@ A baseline installation of the mailer service would look like this
 ./ghost-contact-form
 |-- .env - main config
 |-- LICENSE
+|-- validators - folder for validator json files. these are loaded based on the form name used on the page
+|   |-- form-constraints.json - list of fields used in forms to provide constraints around whats being entered
 |-- assets
 |   |-- css
 |   |   `-- form.css - used for basic html form. used in ghost cms header code injection only if using the basic html 
@@ -58,7 +60,6 @@ A baseline installation of the mailer service would look like this
 |-- ghost-contact-svc.js - nodejs app, called by node from command line or systemd
 |-- node_modules - packages pulled down with npm
 |-- package.json - package json for dependencies
-|-- form-constraints.json - list of fields used in forms to provide constraints around whats being entered
 ```
 
 #### To run from command line execute
