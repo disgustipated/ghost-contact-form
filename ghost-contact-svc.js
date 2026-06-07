@@ -7,7 +7,9 @@ var nodemailer = require('nodemailer');
 var smtpTrans  = require('nodemailer-smtp-transport');
 var validator  = require("email-validator");
 var sanitize   = require('sanitize-html');
-var smtp  = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthorized": false}, "debug": false};
+const { ReadStream } = require('fs');
+const path     = require('path');
+var smtp       = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthorized": false}, "debug": false};
 smtp.host      = process.env.SMTP_HOST;
 smtp.auth.user = process.env.SMTP_USER;
 smtp.auth.pass = process.env.SMTP_PASS;
@@ -34,7 +36,30 @@ app.use((req, res, next) => {
 });
 
 app.use('/v1/assets', express.static(__dirname + '/assets'));
-app.use('/v1/form-constraints', express.static(__dirname + '/form-constraints.json'));
+
+app.get('/v1/form-constraints', async (req, res) => {
+  const { form_id } = req.query;
+  try {
+    const filePath = form_id 
+      ? path.join(__dirname, 'validators', `form-${encodeURIComponent(form_id)}.json`)
+      : path.join(__dirname, 'validators', 'form-constraints.json');
+    const fileContents = await new Promise((resolve, reject) => {
+      const stream = new ReadStream(filePath);
+      stream.on('data', (chunk) => {
+        resolve(chunk.toString());
+      });
+      stream.on('error', (err) => {
+        reject(err);
+      });
+      stream.on('end', () => {
+        stream.destroy();
+      });
+    });
+    res.json(JSON.parse(fileContents));
+  } catch (err) {
+    res.status(404).send('Form constraints not found');
+  }
+});
 
 app.post('/v1/contact', function(req, res) {
     console.log(`Sending mail from clientIp: ${req.clientIp}`);

@@ -1,0 +1,62 @@
+{
+  "name": {
+    "presence": true,
+    "length": {
+      "minimum": 2,
+      "maximum": 30,
+      "message": "must be longer."
+    }
+  },
+  "email": {
+    "presence": true,
+    "email": true
+  },
+  "subject": {
+    "presence": {
+      "allowEmpty": true
+    },
+    "length": {
+      "minimum": 1,
+      "message": "must be selected."
+    }
+  },
+  "message": {
+    "presence": true,
+    "length": {
+      "minimum": 10,
+      "maximum": 4000,
+      "message": "must be longer."
+    }
+  },
+  "robot": {
+    "presence": {
+    	"allowEmpty": true
+    },
+    "length": {
+        "is": 0,
+        "message": "must be filled out."
+    }
+  },
+  "newfield": {
+      "presence": true,
+      "length": {
+          "minimum": 2,
+          "maximum": 30,
+          "message": "must be longer."
+        }
+  },
+  "newfield2": {
+      "presence": true,
+      "length": {
+          "minimum": 2,
+          "maximum": 30,
+          "message": "must be longer."
+        }
+  },
+  "reservationDate": {
+    "presence": true
+  },
+  "reservationTime": {
+    "presence": true
+  }
+}

@@ -4,11 +4,14 @@ const formProcessor = (function() {
   let constraints = null;
   let constraintsLoaded = false;
 
-  const loadConstraints = async () => {
+  const loadConstraints = async (formId = null) => {
     if (constraintsLoaded) return;
     
     try {
-      const response = await fetch('/v1/form-constraints');
+      // Build the URL dynamically based on formId
+      const url = formId ? `/v1/form-constraints?form_id=${encodeURIComponent(formId)}` : '/v1/form-constraints';
+      
+      const response = await fetch(url);
       if (!response.ok) throw new Error(`Failed to load constraints: ${response.status}`);
       
       constraints = await response.json();
@@ -63,7 +66,7 @@ const formProcessor = (function() {
     });
 
     // Load constraints and validate
-    loadConstraints()
+    loadConstraints(formId)
       .then(() => {
         validate.async(attributes, constraints)
           .then(success => {
