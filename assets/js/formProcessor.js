@@ -52,7 +52,8 @@ const formProcessor = (function() {
   };
 
   // Process form submission
-  const processForm = (url, formId = "contact-form") => {
+  const processForm = (url) => {
+    const formId = document.forms[0].id;
     const form = document.getElementById(formId);
     const attributes = {};
     const fields = form.querySelectorAll(
@@ -71,6 +72,7 @@ const formProcessor = (function() {
       .then(() => {
         validate.async(attributes, constraints)
           .then(success => {
+            console.log(success);
             sendData(success, url, formId);
           })
           .catch(error => {
@@ -84,8 +86,8 @@ const formProcessor = (function() {
   };
 
   return {
-    process: (url, formId = "contact-form") => {
-      processForm(url, formId);
+    process: (url) => {
+      processForm(url);
     }
   };
 }());
