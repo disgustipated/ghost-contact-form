@@ -43,6 +43,7 @@ app.get('/v1/form-constraints', async (req, res) => {
     const filePath = form_id 
       ? path.join(__dirname, 'validators', `form-${encodeURIComponent(form_id)}.json`)
       : path.join(__dirname, 'validators', 'form-constraints.json');
+    DEBUGLOG('Loading constraints - ' + filePath);
     const fileContents = await new Promise((resolve, reject) => {
       const stream = new ReadStream(filePath);
       stream.on('data', (chunk) => {
@@ -68,7 +69,7 @@ app.post('/v1/contact', function(req, res) {
 });
 
 app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', function(){
-	console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
+  console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
 });
 
 function sendEmail(data, res) {
@@ -77,7 +78,7 @@ function sendEmail(data, res) {
         to: process.env.EMAIL_TO
     };
     
-    email.subject = (process.env.EMAIL_SUBJHEAD || 'My Site\'s Form') + ' - ' + (data.subject && data.subject.toUpperCase());
+    email.subject = (process.env.EMAIL_SUBJHEAD || 'My Site\'s Form') + ' - ' + (data.formid && data.formid.toUpperCase());
 
     const formDetails = Object.keys(data)
         .filter(key => typeof data[key] === 'string' && key !== 'message' && data[key].trim())

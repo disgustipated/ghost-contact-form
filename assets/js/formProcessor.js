@@ -59,6 +59,7 @@ const formProcessor = (function() {
       'input:not([type="submit"]):not([type="reset"]):not([type="button"]):not([type="file"]):not([type="image"]), select, textarea'
     );
 
+    attributes.formid = form.id;
     fields.forEach(field => {
       if (field.id) {
         attributes[field.id] = field.value;
