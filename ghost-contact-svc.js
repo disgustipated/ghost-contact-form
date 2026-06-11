@@ -7,6 +7,7 @@ var nodemailer = require('nodemailer');
 var smtpTrans  = require('nodemailer-smtp-transport');
 var validator  = require("email-validator");
 var sanitize   = require('sanitize-html');
+var logger     = require('./utility/logger.js');
 const { ReadStream } = require('fs');
 const path     = require('path');
 var smtp       = { "auth": {}, "port": 465, "secure": true, "tls": {"rejectUnauthorized": false}, "debug": false};
@@ -16,9 +17,6 @@ smtp.auth.pass = process.env.SMTP_PASS;
 const allowUrl = process.env.ALLOW_ORIGIN;
 var transporter = nodemailer.createTransport(smtpTrans(smtp));
 
-const shouldLog = !process.env.NODE_ENV || process.env.DEBUG === 'true';
-const DEBUGLOG = shouldLog ? console.log : (() => {});
-
 var app = express();
 app.disable('x-powered-by');
 app.use(bodyParser.urlencoded({limit: '1mb', extended: false}));
@@ -27,7 +25,7 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  DEBUGLOG(`Request headers:`, req.headers);
+  logger.DEBUGLOG(`Request headers:`, req.headers);
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
@@ -43,7 +41,7 @@ app.get('/v1/form-constraints', async (req, res) => {
     const filePath = form_id 
       ? path.join(__dirname, 'validators', `form-${encodeURIComponent(form_id)}.json`)
       : path.join(__dirname, 'validators', 'form-constraints.json');
-    DEBUGLOG('Loading constraints - ' + filePath);
+    logger.DEBUGLOG('Loading constraints - ' + filePath);
     const fileContents = await new Promise((resolve, reject) => {
       const stream = new ReadStream(filePath);
       stream.on('data', (chunk) => {
@@ -64,7 +62,7 @@ app.get('/v1/form-constraints', async (req, res) => {
 
 app.post('/v1/contact', function(req, res) {
     console.log(`Sending mail from clientIp: ${req.clientIp}`);
-    if(validator.validate(req.body.email)) return sendEmail(req.body, res);  
+    if(validator.validate(req.body.email)) return sendEmail(req.clientIp, req.body, res);  
     res.status(403).json({"validation": "no email"});
 });
 
@@ -72,7 +70,7 @@ app.listen(process.env.PORT || 7000, process.env.LOCALBIND || 'localhost', funct
   console.log('Listening on http://' + (process.env.LOCALBIND || 'localhost') + (':') + (process.env.PORT || 7000));
 });
 
-function sendEmail(data, res) {
+function sendEmail(sender, data, res) {
     const email = {
         from: process.env.EMAIL_FROM,
         to: process.env.EMAIL_TO
@@ -97,8 +95,11 @@ function sendEmail(data, res) {
         allowedTags: sanitize.defaults.allowedTags.concat(['img'])
     });
 
+    logger.storeData(sender, email);
     transporter.sendMail(email, function(error, info) {
-        if (error) return res.json({ sendEmail: "failed" });
+        if (error) return res.json({ 
+          sendEmail: "failed" 
+        });
         res.json({ sendEmail: "ok" });
     });
 }
