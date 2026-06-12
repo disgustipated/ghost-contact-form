@@ -1,18 +1,6 @@
 //logger.js
 //=========
 //containers logger functions to store data 
-module.exports ={
-	DEBUGLOG : function () {
-		shouldLog ? console.log : (() => {});
-	},
-	storeData : function (sender, content) {
-		inboundRequest = {};
-		inboundRequest.sender = sender;
-		inboundRequest.content = content;
-		log(inboundRequest);
-	}
-}
-
 const path     = require('path');
 const fs = require('fs');
 const shouldLog = !process.env.NODE_ENV || process.env.DEBUG === 'true';
@@ -25,6 +13,19 @@ const dirPath = path.dirname(logFilePath);
 if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true });
 }
+
+module.exports ={
+	DEBUGLOG : function (data) {
+		shouldLog ? console.log(data) : (() => {});
+	},
+	storeData : function (sender, content) {
+		inboundRequest = {};
+		inboundRequest.sender = sender;
+		inboundRequest.content = content;
+		log(inboundRequest);
+	}
+}
+
 
 const log = (message) => {
   const now = new Date();

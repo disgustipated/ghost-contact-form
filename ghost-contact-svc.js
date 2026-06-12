@@ -25,7 +25,7 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  logger.DEBUGLOG(`Request headers:`, req.headers);
+  logger.DEBUGLOG(`Request headers: ${JSON.stringify(req.headers, null, 2)}`);
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
