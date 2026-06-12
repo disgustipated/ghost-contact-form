@@ -18,7 +18,7 @@ const fs = require('fs');
 const shouldLog = !process.env.NODE_ENV || process.env.DEBUG === 'true';
 
 // Configure log file
-const logFilePath = path.join('./log/app.log');
+const logFilePath = path.join(__dirname, '../log/app.log');
 
 // Create directory if needed
 const dirPath = path.dirname(logFilePath);
