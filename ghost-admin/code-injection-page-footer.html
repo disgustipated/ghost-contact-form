@@ -1,18 +1,48 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const hasForm = document.querySelector('form');
+    const form = document.querySelector('form');
     
-    if (hasForm) {
-      // Add the scripts to the document flow
-      const script1 = document.createElement('script');
-      script1.src = "/v1/assets/js/validate.min.js";
-      script1.type = "text/javascript";
-      document.head.appendChild(script1);
+    if (form) {
+      const validateScript = document.createElement('script');
+      validateScript.src = "/v1/assets/js/validate.min.js";
+      validateScript.type = "text/javascript";
+      document.head.appendChild(validateScript);
       
-      const script2 = document.createElement('script');
-      script2.src = "/v1/assets/js/formProcessor.js";
-      script2.type = "text/javascript";
-      document.head.appendChild(script2);
+      const processorScript = document.createElement('script');
+      processorScript.src = "/v1/assets/js/formProcessor.js";
+      processorScript.type = "text/javascript";
+
+      let processorLoaded = false;
+      
+      processorScript.onload = () => {
+        processorLoaded = true;
+        console.log("formProcessor.js loaded successfully");
+      };
+      processorScript.onerror = () => {
+        console.error("Error loading formProcessor.js");
+        showErrorFormError();
+      };
+      
+      document.head.appendChild(processorScript);
+      
+      const enableForm = () => {
+        if (!processorLoaded) {
+          showErrorFormError();
+        } else {
+          form.disabled = false;
+        }
+      };
+      
+      setTimeout(enableForm, 500);
+      form.addEventListener('input', enableForm);
+      
+      function showErrorFormError() {
+        const errorDiv = document.createElement('div');
+        errorDiv.textContent = '⚠️ There was an error loading the form, please call instead';
+        errorDiv.style.color = 'red';
+        errorDiv.style.marginTop = '10px';
+        form.insertBefore(errorDiv, form.firstChild);
+      }
     }
   });
 </script>
