@@ -78,7 +78,7 @@ systemctl status ghost-contact.service
 ```
 To remove run  
 ```
-systemd disable ghost-contact.service
+systemctl disable ghost-contact.service
 ```
 
 ### Configure Proxy
@@ -87,7 +87,7 @@ If using a proxy and the mailer service exists on another system, you'll need to
 #### Nginx config
 WIP for production setup - This will route all v1 calls to this box, this needs to be handled better to make this specific to this app service. Replace upstream app/port with ip and port. When using the below, you can have the header/footer injections point to just /v1/path
 ```
-    location ~ /v1/ {
+    location ~ /formhandler/ {
         proxy_set_header        Host              $host;
         proxy_set_header        Authorization     $http_authorization;
         proxy_set_header        X-Real-IP         $remote_addr;

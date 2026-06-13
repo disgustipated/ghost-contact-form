@@ -25,17 +25,18 @@ app.use(cors({origin: process.env.ALLOW_ORIGIN,
     allowedHeaders: ['Content-Type', 'application/json; charset=utf-8', 'text/html; charset=utf-8']}));
 
 app.use((req, res, next) => {
-  logger.DEBUGLOG(`Request headers: ${JSON.stringify(req.headers, null, 2)}`);
   const clientIp = req.headers['x-forwarded-for'] 
                   ? req.headers['x-forwarded-for'].split(',')[0].trim() 
                   : req.connection.remoteAddress;
   req.clientIp = clientIp;
+  logger.DEBUGLOG(`Url requested: ${req.originalUrl} from ${clientIp}`);
+  logger.DEBUGLOG(`Request headers: ${JSON.stringify(req.headers, null, 2)}`);
   next();
 });
 
-app.use('/v1/assets', express.static(__dirname + '/assets'));
+app.use('/formhandler/assets', express.static(__dirname + '/assets'));
 
-app.get('/v1/form-constraints', async (req, res) => {
+app.get('/formhandler/form-constraints', async (req, res) => {
   const { form_id } = req.query;
   try {
     const filePath = form_id 
@@ -60,7 +61,7 @@ app.get('/v1/form-constraints', async (req, res) => {
   }
 });
 
-app.post('/v1/contact', function(req, res) {
+app.post('/formhandler/contact', function(req, res) {
     console.log(`Sending mail from clientIp: ${req.clientIp}`);
     if(validator.validate(req.body.email)) return sendEmail(req.clientIp, req.body, res);  
     res.status(403).json({"validation": "no email"});

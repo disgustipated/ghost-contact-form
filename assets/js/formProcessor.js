@@ -9,7 +9,7 @@ const formProcessor = (function() {
     
     try {
       // Build the URL dynamically based on formId
-      const url = formId ? `/v1/form-constraints?form_id=${encodeURIComponent(formId)}` : '/v1/form-constraints';
+      const url = formId ? `/formhandler/form-constraints?form_id=${encodeURIComponent(formId)}` : '/formhandler/form-constraints';
       
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Failed to load constraints: ${response.status}`);
