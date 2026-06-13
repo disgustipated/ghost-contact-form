@@ -72,7 +72,6 @@ const formProcessor = (function() {
       .then(() => {
         validate.async(attributes, constraints)
           .then(success => {
-            console.log(success);
             sendData(success, url, formId);
           })
           .catch(error => {
