@@ -1,25 +1,24 @@
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form');
+document.addEventListener('DOMContentLoaded', () => {
+    const hasform = document.querySelector('form');
     
-    if (form) {
+    if (hasform) {
       const validateScript = document.createElement('script');
-      validateScript.src = "/v1/assets/js/validate.min.js";
+      validateScript.src = "/formhandler/assets/js/validate.min.js";
       validateScript.type = "text/javascript";
       document.head.appendChild(validateScript);
       
       const processorScript = document.createElement('script');
-      processorScript.src = "/v1/assets/js/formProcessor.js";
+      processorScript.src = "/formhandler/assets/js/formProcessor.js";
       processorScript.type = "text/javascript";
-
-      let processorLoaded = false;
       
+      let processorLoaded = false;
+
       processorScript.onload = () => {
         processorLoaded = true;
-        console.log("formProcessor.js loaded successfully");
       };
+      
       processorScript.onerror = () => {
-        console.error("Error loading formProcessor.js");
         showErrorFormError();
       };
       
@@ -29,19 +28,18 @@
         if (!processorLoaded) {
           showErrorFormError();
         } else {
-          form.disabled = false;
+          hasform.disabled = false;
         }
       };
-      
       setTimeout(enableForm, 500);
-      form.addEventListener('input', enableForm);
-      
+      hasform.addEventListener('input', enableForm);
       function showErrorFormError() {
         const errorDiv = document.createElement('div');
-        errorDiv.textContent = '⚠️ There was an error loading the form, please call instead';
+        errorDiv.textContent = '⚠️ There was an error loading the form, please call to contact instead';
         errorDiv.style.color = 'red';
         errorDiv.style.marginTop = '10px';
-        form.insertBefore(errorDiv, form.firstChild);
+        hasform.insertBefore(errorDiv, hasform.firstChild);
+        document.querySelector('.g-auth-form-container__normal').style.display = 'none';
       }
     }
   });
